@@ -1,0 +1,16 @@
+apiVersion: v2
+name: streamingapp
+description: A Helm chart for StreamingApp - MERN Microservices Platform
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - streaming
+  - video
+  - mern
+  - microservices
+maintainers:
+  - name: StreamingApp Team
+    email: team@streamingapp.com
+sources:
+  - https://github.com/UnpredictablePrashant/StreamingApp

@@ -1,0 +1,244 @@
+# Default values for streamingapp
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Global settings
+global:
+  environment: production
+  awsRegion: ap-south-1
+
+# Image registry settings
+imageRegistry:
+  url: ""  # Set to your ECR registry URL: <account-id>.dkr.ecr.<region>.amazonaws.com
+  pullPolicy: Always
+
+# Image tags (override in CI/CD)
+imageTag: latest
+
+# MongoDB configuration
+mongodb:
+  enabled: true
+  auth:
+    enabled: false
+  persistence:
+    enabled: true
+    size: 10Gi
+    storageClass: gp3
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
+
+# Frontend service
+frontend:
+  name: frontend
+  replicaCount: 2
+  image:
+    repository: streamingapp-frontend
+    tag: latest
+  service:
+    type: LoadBalancer
+    port: 80
+    targetPort: 80
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+  env:
+    REACT_APP_AUTH_API_URL: "http://auth:3001/api"
+    REACT_APP_STREAMING_API_URL: "http://streaming:3002/api"
+    REACT_APP_STREAMING_PUBLIC_URL: "http://streaming:3002"
+    REACT_APP_ADMIN_API_URL: "http://admin:3003/api/admin"
+    REACT_APP_CHAT_API_URL: "http://chat:3004/api/chat"
+    REACT_APP_CHAT_SOCKET_URL: "http://chat:3004"
+
+# Auth service
+auth:
+  name: auth
+  replicaCount: 2
+  image:
+    repository: streamingapp-auth
+    tag: latest
+  service:
+    type: ClusterIP
+    port: 3001
+    targetPort: 3001
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "300m"
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 70
+  env:
+    PORT: "3001"
+    NODE_ENV: "production"
+    MONGO_DB: "streamingapp"
+
+# Streaming service
+streaming:
+  name: streaming
+  replicaCount: 3
+  image:
+    repository: streamingapp-streaming
+    tag: latest
+  service:
+    type: ClusterIP
+    port: 3002
+    targetPort: 3002
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "200m"
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+  env:
+    PORT: "3002"
+    NODE_ENV: "production"
+    MONGO_DB: "streamingapp"
+
+# Admin service
+admin:
+  name: admin
+  replicaCount: 2
+  image:
+    repository: streamingapp-admin
+    tag: latest
+  service:
+    type: ClusterIP
+    port: 3003
+    targetPort: 3003
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "300m"
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 70
+  env:
+    PORT: "3003"
+    NODE_ENV: "production"
+    MONGO_DB: "streamingapp"
+
+# Chat service
+chat:
+  name: chat
+  replicaCount: 2
+  image:
+    repository: streamingapp-chat
+    tag: latest
+  service:
+    type: ClusterIP
+    port: 3004
+    targetPort: 3004
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "300m"
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 70
+  env:
+    PORT: "3004"
+    NODE_ENV: "production"
+    MONGO_DB: "streamingapp"
+
+# Secrets (use external secrets or sealed secrets in production)
+secrets:
+  jwtSecret: "changeme-use-strong-secret"
+  awsAccessKeyId: ""
+  awsSecretAccessKey: ""
+  awsS3Bucket: ""
+  awsCdnUrl: ""
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: "alb"
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/certificate-arn: ""  # Add ACM certificate ARN
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+  hosts:
+    - host: streamingapp.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: frontend
+              port: 80
+
+# Monitoring
+monitoring:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+
+# Logging  
+logging:
+  enabled: true
+  cloudwatch:
+    enabled: true
+    logGroupName: "/aws/eks/streamingapp"
+    region: ap-south-1
+
+# Network policies
+networkPolicy:
+  enabled: false
+
+# Pod security
+podSecurityContext:
+  fsGroup: 1000
+  runAsNonRoot: true
+  runAsUser: 1000
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: false
+
+# Service account
+serviceAccount:
+  create: true
+  annotations:
+    eks.amazonaws.com/role-arn: ""  # Add IAM role ARN for IRSA
+  name: streamingapp-sa
