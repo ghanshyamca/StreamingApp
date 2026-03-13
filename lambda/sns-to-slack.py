@@ -1,10 +1,23 @@
 import json
 import urllib3
 import os
+from datetime import datetime, timezone
 
 http = urllib3.PoolManager()
 
 SLACK_WEBHOOK_URL = os.environ['SLACK_WEBHOOK_URL']
+
+
+def to_unix_timestamp(value):
+    """Convert SNS ISO-8601 timestamps to Unix epoch seconds for Slack."""
+    if not value:
+        return int(datetime.now(timezone.utc).timestamp())
+
+    try:
+        # SNS uses RFC3339 like: 2026-03-13T17:11:20.987Z
+        return int(datetime.fromisoformat(value.replace('Z', '+00:00')).timestamp())
+    except ValueError:
+        return int(datetime.now(timezone.utc).timestamp())
 
 def lambda_handler(event, context):
     """
@@ -36,7 +49,7 @@ def lambda_handler(event, context):
                     "text": message,
                     "footer": "StreamingApp",
                     "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
-                    "ts": int(float(sns_message.get('Timestamp', 0)))
+                    "ts": to_unix_timestamp(timestamp)
                 }
             ]
         }
