@@ -28,6 +28,7 @@ pipeline {
         choice(name: 'DEPLOYMENT_ENV', choices: ['dev', 'staging', 'production'], description: 'Deployment Environment')
         booleanParam(name: 'DEPLOY_TO_EKS', defaultValue: false, description: 'Deploy to EKS after build?')
         booleanParam(name: 'RUN_TESTS', defaultValue: true, description: 'Run tests before build?')
+        string(name: 'EKS_ROLE_ARN', defaultValue: '', description: 'Optional IAM role ARN to assume for EKS kubectl/helm access')
     }
     
     stages {
@@ -308,26 +309,38 @@ pipeline {
             steps {
                 script {
                     echo "Deploying to EKS cluster..."
-                    sh """
-                        # Configure kubectl
-                        aws eks update-kubeconfig --name streamingapp-cluster --region ${AWS_REGION}
-                        
-                        # Deploy using Helm
-                        ./.tools/helm upgrade --install streamingapp \
-                            ./k8s/helm/streamingapp \
-                            --namespace ${params.DEPLOYMENT_ENV} \
-                            --create-namespace \
-                            --set image.tag=${IMAGE_TAG} \
-                            --set global.environment=${params.DEPLOYMENT_ENV} \
-                            --wait
-                        
-                        # Verify deployment
-                        kubectl rollout status deployment/streamingapp-frontend -n ${params.DEPLOYMENT_ENV}
-                        kubectl rollout status deployment/streamingapp-auth -n ${params.DEPLOYMENT_ENV}
-                        kubectl rollout status deployment/streamingapp-streaming -n ${params.DEPLOYMENT_ENV}
-                        kubectl rollout status deployment/streamingapp-admin -n ${params.DEPLOYMENT_ENV}
-                        kubectl rollout status deployment/streamingapp-chat -n ${params.DEPLOYMENT_ENV}
-                    """
+                    withCredentials([[
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        credentialsId: 'aws-credentials',
+                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                    ]]) {
+                        def roleArg = params.EKS_ROLE_ARN?.trim() ? "--role-arn ${params.EKS_ROLE_ARN.trim()}" : ""
+                        sh """
+                            # Configure kubectl
+                            aws eks update-kubeconfig --name streamingapp-cluster --region ${AWS_REGION} ${roleArg}
+
+                            # Sanity-check cluster authentication before helm deploy
+                            kubectl get ns ${params.DEPLOYMENT_ENV} >/dev/null 2>&1 || true
+                            kubectl auth can-i get pods -n ${params.DEPLOYMENT_ENV}
+
+                            # Deploy using Helm
+                            ./.tools/helm upgrade --install streamingapp \
+                                ./k8s/helm/streamingapp \
+                                --namespace ${params.DEPLOYMENT_ENV} \
+                                --create-namespace \
+                                --set image.tag=${IMAGE_TAG} \
+                                --set global.environment=${params.DEPLOYMENT_ENV} \
+                                --wait
+
+                            # Verify deployment
+                            kubectl rollout status deployment/streamingapp-frontend -n ${params.DEPLOYMENT_ENV}
+                            kubectl rollout status deployment/streamingapp-auth -n ${params.DEPLOYMENT_ENV}
+                            kubectl rollout status deployment/streamingapp-streaming -n ${params.DEPLOYMENT_ENV}
+                            kubectl rollout status deployment/streamingapp-admin -n ${params.DEPLOYMENT_ENV}
+                            kubectl rollout status deployment/streamingapp-chat -n ${params.DEPLOYMENT_ENV}
+                        """
+                    }
                 }
             }
         }
