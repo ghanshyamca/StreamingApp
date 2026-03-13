@@ -266,11 +266,7 @@ pipeline {
             }
             steps {
                 script {
-                    echo "Updating Kubernetes deployment manifests with new image tags..."
-                    sh """
-                        # Update image tags in Helm values or K8s manifests
-                        sed -i 's|tag:.*|tag: ${IMAGE_TAG}|g' k8s/helm/streamingapp/values.yaml || true
-                    """
+                    echo "Skipping values.yaml mutation; image tag is passed via Helm flags."
                 }
             }
         }
@@ -338,13 +334,21 @@ pipeline {
                             kubectl auth can-i get pods -n ${params.DEPLOYMENT_ENV}
 
                             # Deploy using Helm
-                            ./.tools/helm upgrade --install streamingapp \
+                            if ! ./.tools/helm upgrade --install streamingapp \
                                 ./k8s/helm/streamingapp \
                                 --namespace ${params.DEPLOYMENT_ENV} \
                                 --create-namespace \
-                                --set image.tag=${IMAGE_TAG} \
+                                --set-string imageTag=${IMAGE_TAG} \
                                 --set global.environment=${params.DEPLOYMENT_ENV} \
-                                --wait
+                                --wait \
+                                --timeout 20m; then
+                                echo "Helm deploy failed. Collecting diagnostics..."
+                                kubectl get all -n ${params.DEPLOYMENT_ENV} || true
+                                kubectl get pvc -n ${params.DEPLOYMENT_ENV} || true
+                                kubectl get ingress -n ${params.DEPLOYMENT_ENV} || true
+                                kubectl get events -n ${params.DEPLOYMENT_ENV} --sort-by=.metadata.creationTimestamp | tail -n 50 || true
+                                exit 1
+                            fi
 
                             # Verify deployment
                             kubectl rollout status deployment/streamingapp-frontend -n ${params.DEPLOYMENT_ENV}

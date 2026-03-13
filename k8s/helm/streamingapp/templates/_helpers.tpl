@@ -83,7 +83,7 @@ Full image name
 {{- define "streamingapp.image" -}}
 {{- $registry := .Values.imageRegistry.url }}
 {{- $repository := .repository }}
-{{- $tag := .tag | default $.Values.imageTag }}
+{{- $tag := (.tag | default $.Values.imageTag | toString) }}
 {{- if $registry }}
 {{- printf "%s/%s:%s" $registry $repository $tag }}
 {{- else }}
