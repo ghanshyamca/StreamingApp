@@ -317,6 +317,19 @@ pipeline {
                     ]]) {
                         def roleArg = params.EKS_ROLE_ARN?.trim() ? "--role-arn ${params.EKS_ROLE_ARN.trim()}" : ""
                         sh """
+                            # Ensure current AWS principal has EKS API access entry (idempotent)
+                            CALLER_ARN=\$(aws sts get-caller-identity --query Arn --output text)
+                            aws eks create-access-entry \
+                                --cluster-name streamingapp-cluster \
+                                --region ${AWS_REGION} \
+                                --principal-arn "\$CALLER_ARN" >/dev/null 2>&1 || true
+                            aws eks associate-access-policy \
+                                --cluster-name streamingapp-cluster \
+                                --region ${AWS_REGION} \
+                                --principal-arn "\$CALLER_ARN" \
+                                --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy \
+                                --access-scope type=cluster >/dev/null 2>&1 || true
+
                             # Configure kubectl
                             aws eks update-kubeconfig --name streamingapp-cluster --region ${AWS_REGION} ${roleArg}
 
