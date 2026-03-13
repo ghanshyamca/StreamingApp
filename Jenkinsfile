@@ -273,6 +273,33 @@ pipeline {
                 }
             }
         }
+
+        stage('Prepare Helm CLI') {
+            when {
+                expression { params.DEPLOY_TO_EKS == true }
+            }
+            steps {
+                script {
+                    echo "Preparing Helm CLI..."
+                    sh '''
+                        set -e
+                        if command -v helm >/dev/null 2>&1; then
+                          mkdir -p .tools
+                          ln -sf "$(command -v helm)" .tools/helm
+                        else
+                          HELM_VERSION="v3.16.4"
+                          curl -fsSL -o helm.tar.gz "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz"
+                          tar -xzf helm.tar.gz
+                          mkdir -p .tools
+                          mv linux-amd64/helm .tools/helm
+                          chmod +x .tools/helm
+                          rm -rf linux-amd64 helm.tar.gz
+                        fi
+                        ./.tools/helm version --short
+                    '''
+                }
+            }
+        }
         
         stage('Deploy to EKS') {
             when {
@@ -286,20 +313,20 @@ pipeline {
                         aws eks update-kubeconfig --name streamingapp-cluster --region ${AWS_REGION}
                         
                         # Deploy using Helm
-                        helm upgrade --install streamingapp \
+                        ./.tools/helm upgrade --install streamingapp \
                             ./k8s/helm/streamingapp \
                             --namespace ${params.DEPLOYMENT_ENV} \
                             --create-namespace \
                             --set image.tag=${IMAGE_TAG} \
-                            --set environment=${params.DEPLOYMENT_ENV} \
+                            --set global.environment=${params.DEPLOYMENT_ENV} \
                             --wait
                         
                         # Verify deployment
-                        kubectl rollout status deployment/frontend -n ${params.DEPLOYMENT_ENV}
-                        kubectl rollout status deployment/auth -n ${params.DEPLOYMENT_ENV}
-                        kubectl rollout status deployment/streaming -n ${params.DEPLOYMENT_ENV}
-                        kubectl rollout status deployment/admin -n ${params.DEPLOYMENT_ENV}
-                        kubectl rollout status deployment/chat -n ${params.DEPLOYMENT_ENV}
+                        kubectl rollout status deployment/streamingapp-frontend -n ${params.DEPLOYMENT_ENV}
+                        kubectl rollout status deployment/streamingapp-auth -n ${params.DEPLOYMENT_ENV}
+                        kubectl rollout status deployment/streamingapp-streaming -n ${params.DEPLOYMENT_ENV}
+                        kubectl rollout status deployment/streamingapp-admin -n ${params.DEPLOYMENT_ENV}
+                        kubectl rollout status deployment/streamingapp-chat -n ${params.DEPLOYMENT_ENV}
                     """
                 }
             }
