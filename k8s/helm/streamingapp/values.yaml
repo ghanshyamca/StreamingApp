@@ -37,7 +37,7 @@ frontend:
   name: frontend
   replicaCount: 2
   image:
-    repository: streamingapp-frontend
+    repository: gs-streamingapp-frontend
     tag: latest
   service:
     type: LoadBalancer
@@ -68,7 +68,7 @@ auth:
   name: auth
   replicaCount: 2
   image:
-    repository: streamingapp-auth
+    repository: gs-streamingapp-auth
     tag: latest
   service:
     type: ClusterIP
@@ -96,7 +96,7 @@ streaming:
   name: streaming
   replicaCount: 3
   image:
-    repository: streamingapp-streaming
+    repository: gs-streamingapp-streaming
     tag: latest
   service:
     type: ClusterIP
@@ -124,7 +124,7 @@ admin:
   name: admin
   replicaCount: 2
   image:
-    repository: streamingapp-admin
+    repository: gs-streamingapp-admin
     tag: latest
   service:
     type: ClusterIP
@@ -152,7 +152,7 @@ chat:
   name: chat
   replicaCount: 2
   image:
-    repository: streamingapp-chat
+    repository: gs-streamingapp-chat
     tag: latest
   service:
     type: ClusterIP

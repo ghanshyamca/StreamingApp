@@ -7,11 +7,11 @@ pipeline {
         ECR_REGISTRY = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
         
         // ECR Repository Names
-        ECR_REPO_FRONTEND = 'streamingapp-frontend'
-        ECR_REPO_AUTH = 'streamingapp-auth'
-        ECR_REPO_STREAMING = 'streamingapp-streaming'
-        ECR_REPO_ADMIN = 'streamingapp-admin'
-        ECR_REPO_CHAT = 'streamingapp-chat'
+        ECR_REPO_FRONTEND = 'gs-streamingapp-frontend'
+        ECR_REPO_AUTH = 'gs-streamingapp-auth'
+        ECR_REPO_STREAMING = 'gs-streamingapp-streaming'
+        ECR_REPO_ADMIN = 'gs-streamingapp-admin'
+        ECR_REPO_CHAT = 'gs-streamingapp-chat'
         
         // Image Tags
         IMAGE_TAG = "${env.BUILD_NUMBER}"

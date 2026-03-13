@@ -10,6 +10,7 @@ ENVIRONMENT="${1:-dev}"
 IMAGE_TAG="${2:-latest}"
 CLUSTER_NAME="${CLUSTER_NAME:-streamingapp-cluster}"
 AWS_REGION="${AWS_REGION:-ap-south-1}"
+ECR_REPO_PREFIX="${ECR_REPO_PREFIX:-gs-}"
 AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
 ECR_REGISTRY="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com"
 
@@ -20,6 +21,7 @@ echo "Environment: $ENVIRONMENT"
 echo "Image Tag: $IMAGE_TAG"
 echo "Cluster: $CLUSTER_NAME"
 echo "Region: $AWS_REGION"
+echo "Repo Prefix: $ECR_REPO_PREFIX"
 echo ""
 
 # Update kubeconfig
@@ -56,6 +58,11 @@ helm upgrade --install streamingapp ./k8s/helm/streamingapp \
   --create-namespace \
   --set imageRegistry.url="$ECR_REGISTRY" \
   --set imageTag="$IMAGE_TAG" \
+  --set frontend.image.repository="${ECR_REPO_PREFIX}streamingapp-frontend" \
+  --set auth.image.repository="${ECR_REPO_PREFIX}streamingapp-auth" \
+  --set streaming.image.repository="${ECR_REPO_PREFIX}streamingapp-streaming" \
+  --set admin.image.repository="${ECR_REPO_PREFIX}streamingapp-admin" \
+  --set chat.image.repository="${ECR_REPO_PREFIX}streamingapp-chat" \
   --set global.environment="$ENVIRONMENT" \
   --set secrets.jwtSecret="$JWT_SECRET" \
   --set secrets.awsAccessKeyId="$AWS_ACCESS_KEY_ID" \

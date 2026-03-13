@@ -8,14 +8,15 @@ set -e
 # Configuration
 AWS_REGION="${AWS_REGION:-ap-south-1}"
 AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+ECR_REPO_PREFIX="${ECR_REPO_PREFIX:-gs-}"
 
 # Repository names
 REPOS=(
-    "streamingapp-frontend"
-    "streamingapp-auth"
-    "streamingapp-streaming"
-    "streamingapp-admin"
-    "streamingapp-chat"
+    "${ECR_REPO_PREFIX}streamingapp-frontend"
+    "${ECR_REPO_PREFIX}streamingapp-auth"
+    "${ECR_REPO_PREFIX}streamingapp-streaming"
+    "${ECR_REPO_PREFIX}streamingapp-admin"
+    "${ECR_REPO_PREFIX}streamingapp-chat"
 )
 
 echo "========================================="
@@ -23,6 +24,7 @@ echo "Creating ECR Repositories"
 echo "========================================="
 echo "AWS Account ID: $AWS_ACCOUNT_ID"
 echo "AWS Region: $AWS_REGION"
+echo "Repo Prefix: $ECR_REPO_PREFIX"
 echo ""
 
 # Create each repository

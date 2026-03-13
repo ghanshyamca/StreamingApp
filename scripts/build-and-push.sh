@@ -9,13 +9,21 @@ set -e
 AWS_REGION="${AWS_REGION:-ap-south-1}"
 AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
 ECR_REGISTRY="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com"
+ECR_REPO_PREFIX="${ECR_REPO_PREFIX:-gs-}"
 IMAGE_TAG="${1:-latest}"
 GIT_COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+
+ECR_REPO_FRONTEND="${ECR_REPO_PREFIX}streamingapp-frontend"
+ECR_REPO_AUTH="${ECR_REPO_PREFIX}streamingapp-auth"
+ECR_REPO_STREAMING="${ECR_REPO_PREFIX}streamingapp-streaming"
+ECR_REPO_ADMIN="${ECR_REPO_PREFIX}streamingapp-admin"
+ECR_REPO_CHAT="${ECR_REPO_PREFIX}streamingapp-chat"
 
 echo "========================================="
 echo "Building and Pushing StreamingApp Images"
 echo "========================================="
 echo "Registry: $ECR_REGISTRY"
+echo "Repo Prefix: $ECR_REPO_PREFIX"
 echo "Image Tag: $IMAGE_TAG"
 echo "Git Commit: $GIT_COMMIT"
 echo ""
@@ -37,15 +45,15 @@ docker build \
     --build-arg REACT_APP_ADMIN_API_URL=${REACT_APP_ADMIN_API_URL:-"http://localhost:3003/api/admin"} \
     --build-arg REACT_APP_CHAT_API_URL=${REACT_APP_CHAT_API_URL:-"http://localhost:3004/api/chat"} \
     --build-arg REACT_APP_CHAT_SOCKET_URL=${REACT_APP_CHAT_SOCKET_URL:-"http://localhost:3004"} \
-    -t "$ECR_REGISTRY/streamingapp-frontend:$IMAGE_TAG" \
-    -t "$ECR_REGISTRY/streamingapp-frontend:$GIT_COMMIT" \
-    -t "$ECR_REGISTRY/streamingapp-frontend:latest" \
+    -t "$ECR_REGISTRY/$ECR_REPO_FRONTEND:$IMAGE_TAG" \
+    -t "$ECR_REGISTRY/$ECR_REPO_FRONTEND:$GIT_COMMIT" \
+    -t "$ECR_REGISTRY/$ECR_REPO_FRONTEND:latest" \
     ./frontend
 
 echo "Pushing frontend images..."
-docker push "$ECR_REGISTRY/streamingapp-frontend:$IMAGE_TAG"
-docker push "$ECR_REGISTRY/streamingapp-frontend:$GIT_COMMIT"
-docker push "$ECR_REGISTRY/streamingapp-frontend:latest"
+docker push "$ECR_REGISTRY/$ECR_REPO_FRONTEND:$IMAGE_TAG"
+docker push "$ECR_REGISTRY/$ECR_REPO_FRONTEND:$GIT_COMMIT"
+docker push "$ECR_REGISTRY/$ECR_REPO_FRONTEND:latest"
 echo "✓ Frontend pushed successfully"
 echo ""
 
@@ -54,15 +62,15 @@ echo "========================================="
 echo "Building Auth Service"
 echo "========================================="
 docker build \
-    -t "$ECR_REGISTRY/streamingapp-auth:$IMAGE_TAG" \
-    -t "$ECR_REGISTRY/streamingapp-auth:$GIT_COMMIT" \
-    -t "$ECR_REGISTRY/streamingapp-auth:latest" \
+    -t "$ECR_REGISTRY/$ECR_REPO_AUTH:$IMAGE_TAG" \
+    -t "$ECR_REGISTRY/$ECR_REPO_AUTH:$GIT_COMMIT" \
+    -t "$ECR_REGISTRY/$ECR_REPO_AUTH:latest" \
     ./backend/authService
 
 echo "Pushing auth service images..."
-docker push "$ECR_REGISTRY/streamingapp-auth:$IMAGE_TAG"
-docker push "$ECR_REGISTRY/streamingapp-auth:$GIT_COMMIT"
-docker push "$ECR_REGISTRY/streamingapp-auth:latest"
+docker push "$ECR_REGISTRY/$ECR_REPO_AUTH:$IMAGE_TAG"
+docker push "$ECR_REGISTRY/$ECR_REPO_AUTH:$GIT_COMMIT"
+docker push "$ECR_REGISTRY/$ECR_REPO_AUTH:latest"
 echo "✓ Auth service pushed successfully"
 echo ""
 
@@ -72,15 +80,15 @@ echo "Building Streaming Service"
 echo "========================================="
 docker build \
     -f backend/streamingService/Dockerfile \
-    -t "$ECR_REGISTRY/streamingapp-streaming:$IMAGE_TAG" \
-    -t "$ECR_REGISTRY/streamingapp-streaming:$GIT_COMMIT" \
-    -t "$ECR_REGISTRY/streamingapp-streaming:latest" \
+    -t "$ECR_REGISTRY/$ECR_REPO_STREAMING:$IMAGE_TAG" \
+    -t "$ECR_REGISTRY/$ECR_REPO_STREAMING:$GIT_COMMIT" \
+    -t "$ECR_REGISTRY/$ECR_REPO_STREAMING:latest" \
     ./backend
 
 echo "Pushing streaming service images..."
-docker push "$ECR_REGISTRY/streamingapp-streaming:$IMAGE_TAG"
-docker push "$ECR_REGISTRY/streamingapp-streaming:$GIT_COMMIT"
-docker push "$ECR_REGISTRY/streamingapp-streaming:latest"
+docker push "$ECR_REGISTRY/$ECR_REPO_STREAMING:$IMAGE_TAG"
+docker push "$ECR_REGISTRY/$ECR_REPO_STREAMING:$GIT_COMMIT"
+docker push "$ECR_REGISTRY/$ECR_REPO_STREAMING:latest"
 echo "✓ Streaming service pushed successfully"
 echo ""
 
@@ -90,15 +98,15 @@ echo "Building Admin Service"
 echo "========================================="
 docker build \
     -f backend/adminService/Dockerfile \
-    -t "$ECR_REGISTRY/streamingapp-admin:$IMAGE_TAG" \
-    -t "$ECR_REGISTRY/streamingapp-admin:$GIT_COMMIT" \
-    -t "$ECR_REGISTRY/streamingapp-admin:latest" \
+    -t "$ECR_REGISTRY/$ECR_REPO_ADMIN:$IMAGE_TAG" \
+    -t "$ECR_REGISTRY/$ECR_REPO_ADMIN:$GIT_COMMIT" \
+    -t "$ECR_REGISTRY/$ECR_REPO_ADMIN:latest" \
     ./backend
 
 echo "Pushing admin service images..."
-docker push "$ECR_REGISTRY/streamingapp-admin:$IMAGE_TAG"
-docker push "$ECR_REGISTRY/streamingapp-admin:$GIT_COMMIT"
-docker push "$ECR_REGISTRY/streamingapp-admin:latest"
+docker push "$ECR_REGISTRY/$ECR_REPO_ADMIN:$IMAGE_TAG"
+docker push "$ECR_REGISTRY/$ECR_REPO_ADMIN:$GIT_COMMIT"
+docker push "$ECR_REGISTRY/$ECR_REPO_ADMIN:latest"
 echo "✓ Admin service pushed successfully"
 echo ""
 
@@ -108,15 +116,15 @@ echo "Building Chat Service"
 echo "========================================="
 docker build \
     -f backend/chatService/Dockerfile \
-    -t "$ECR_REGISTRY/streamingapp-chat:$IMAGE_TAG" \
-    -t "$ECR_REGISTRY/streamingapp-chat:$GIT_COMMIT" \
-    -t "$ECR_REGISTRY/streamingapp-chat:latest" \
+    -t "$ECR_REGISTRY/$ECR_REPO_CHAT:$IMAGE_TAG" \
+    -t "$ECR_REGISTRY/$ECR_REPO_CHAT:$GIT_COMMIT" \
+    -t "$ECR_REGISTRY/$ECR_REPO_CHAT:latest" \
     ./backend
 
 echo "Pushing chat service images..."
-docker push "$ECR_REGISTRY/streamingapp-chat:$IMAGE_TAG"
-docker push "$ECR_REGISTRY/streamingapp-chat:$GIT_COMMIT"
-docker push "$ECR_REGISTRY/streamingapp-chat:latest"
+docker push "$ECR_REGISTRY/$ECR_REPO_CHAT:$IMAGE_TAG"
+docker push "$ECR_REGISTRY/$ECR_REPO_CHAT:$GIT_COMMIT"
+docker push "$ECR_REGISTRY/$ECR_REPO_CHAT:latest"
 echo "✓ Chat service pushed successfully"
 echo ""
 
