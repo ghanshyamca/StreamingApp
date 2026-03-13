@@ -64,7 +64,7 @@ Generate MongoDB URI
 */}}
 {{- define "streamingapp.mongoUri" -}}
 {{- if .Values.mongodb.enabled }}
-{{- printf "mongodb://mongodb:27017/%s" .Values.mongodb.env.MONGO_DB }}
+{{- printf "mongodb://mongodb:27017/%s" ((.Values.mongodb.env | default dict).MONGO_DB | default "streamingapp") }}
 {{- else }}
 {{- .Values.mongodb.externalUri }}
 {{- end }}

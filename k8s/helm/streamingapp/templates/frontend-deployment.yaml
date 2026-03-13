@@ -30,6 +30,13 @@ spec:
         - name: http
           containerPort: {{ .Values.frontend.service.targetPort }}
           protocol: TCP
+        volumeMounts:
+        - name: frontend-nginx-cache
+          mountPath: /var/cache/nginx
+        - name: frontend-nginx-run
+          mountPath: /var/run
+        - name: frontend-tmp
+          mountPath: /tmp
         livenessProbe:
           httpGet:
             path: /
@@ -44,6 +51,13 @@ spec:
           periodSeconds: 5
         resources:
           {{- toYaml .Values.frontend.resources | nindent 12 }}
+      volumes:
+      - name: frontend-nginx-cache
+        emptyDir: {}
+      - name: frontend-nginx-run
+        emptyDir: {}
+      - name: frontend-tmp
+        emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
@@ -52,6 +66,9 @@ metadata:
   labels:
     {{- include "streamingapp.labels" . | nindent 4 }}
     app.kubernetes.io/component: frontend
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "instance"
 spec:
   type: {{ .Values.frontend.service.type }}
   ports:

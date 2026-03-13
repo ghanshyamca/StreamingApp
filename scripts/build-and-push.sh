@@ -39,12 +39,12 @@ echo "========================================="
 echo "Building Frontend"
 echo "========================================="
 docker build \
-    --build-arg REACT_APP_AUTH_API_URL=${REACT_APP_AUTH_API_URL:-"http://localhost:3001/api"} \
-    --build-arg REACT_APP_STREAMING_API_URL=${REACT_APP_STREAMING_API_URL:-"http://localhost:3002/api"} \
-    --build-arg REACT_APP_STREAMING_PUBLIC_URL=${REACT_APP_STREAMING_PUBLIC_URL:-"http://localhost:3002"} \
-    --build-arg REACT_APP_ADMIN_API_URL=${REACT_APP_ADMIN_API_URL:-"http://localhost:3003/api/admin"} \
-    --build-arg REACT_APP_CHAT_API_URL=${REACT_APP_CHAT_API_URL:-"http://localhost:3004/api/chat"} \
-    --build-arg REACT_APP_CHAT_SOCKET_URL=${REACT_APP_CHAT_SOCKET_URL:-"http://localhost:3004"} \
+    --build-arg REACT_APP_AUTH_API_URL=${REACT_APP_AUTH_API_URL:-"/api"} \
+    --build-arg REACT_APP_STREAMING_API_URL=${REACT_APP_STREAMING_API_URL:-"/api"} \
+    --build-arg REACT_APP_STREAMING_PUBLIC_URL=${REACT_APP_STREAMING_PUBLIC_URL:-""} \
+    --build-arg REACT_APP_ADMIN_API_URL=${REACT_APP_ADMIN_API_URL:-"/api/admin"} \
+    --build-arg REACT_APP_CHAT_API_URL=${REACT_APP_CHAT_API_URL:-"/api/chat"} \
+    --build-arg REACT_APP_CHAT_SOCKET_URL=${REACT_APP_CHAT_SOCKET_URL:-""} \
     -t "$ECR_REGISTRY/$ECR_REPO_FRONTEND:$IMAGE_TAG" \
     -t "$ECR_REGISTRY/$ECR_REPO_FRONTEND:$GIT_COMMIT" \
     -t "$ECR_REGISTRY/$ECR_REPO_FRONTEND:latest" \

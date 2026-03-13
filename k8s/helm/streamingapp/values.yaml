@@ -6,10 +6,16 @@
 global:
   environment: production
   awsRegion: ap-south-1
+  # Comma-separated allowed browser origins for backend CORS.
+  # Empty means allow all origins in current backend implementation.
+  clientUrls: ""
+  # Public base URL used by the streaming service to build stream/thumbnail URLs.
+  # Set this to the frontend LoadBalancer/ELB hostname (nginx proxies /api/streaming).
+  streamingPublicUrl: "http://k8s-dev-streamin-bdd98017ab-15709bbd30236df4.elb.ap-south-1.amazonaws.com"
 
 # Image registry settings
 imageRegistry:
-  url: ""  # Set to your ECR registry URL: <account-id>.dkr.ecr.<region>.amazonaws.com
+  url: "975050024946.dkr.ecr.ap-south-1.amazonaws.com"  # Set to your ECR registry URL: <account-id>.dkr.ecr.<region>.amazonaws.com
   pullPolicy: Always
 
 # Image tags (override in CI/CD)
@@ -18,12 +24,14 @@ imageTag: latest
 # MongoDB configuration
 mongodb:
   enabled: true
+  env:
+    MONGO_DB: streamingapp
   auth:
     enabled: false
   persistence:
     enabled: true
     size: 10Gi
-    storageClass: gp3
+    storageClass: ""
   resources:
     requests:
       memory: "512Mi"
@@ -38,7 +46,7 @@ frontend:
   replicaCount: 2
   image:
     repository: gs-streamingapp-frontend
-    tag: latest
+    tag: ""
   service:
     type: LoadBalancer
     port: 80
@@ -58,7 +66,7 @@ frontend:
   env:
     REACT_APP_AUTH_API_URL: "http://auth:3001/api"
     REACT_APP_STREAMING_API_URL: "http://streaming:3002/api"
-    REACT_APP_STREAMING_PUBLIC_URL: "http://streaming:3002"
+    REACT_APP_STREAMING_PUBLIC_URL: "http://k8s-dev-streamin-bdd98017ab-15709bbd30236df4.elb.ap-south-1.amazonaws.com"
     REACT_APP_ADMIN_API_URL: "http://admin:3003/api/admin"
     REACT_APP_CHAT_API_URL: "http://chat:3004/api/chat"
     REACT_APP_CHAT_SOCKET_URL: "http://chat:3004"
@@ -69,7 +77,7 @@ auth:
   replicaCount: 2
   image:
     repository: gs-streamingapp-auth
-    tag: latest
+    tag: ""
   service:
     type: ClusterIP
     port: 3001
@@ -97,7 +105,7 @@ streaming:
   replicaCount: 3
   image:
     repository: gs-streamingapp-streaming
-    tag: latest
+    tag: ""
   service:
     type: ClusterIP
     port: 3002
@@ -125,7 +133,7 @@ admin:
   replicaCount: 2
   image:
     repository: gs-streamingapp-admin
-    tag: latest
+    tag: ""
   service:
     type: ClusterIP
     port: 3003
@@ -153,7 +161,7 @@ chat:
   replicaCount: 2
   image:
     repository: gs-streamingapp-chat
-    tag: latest
+    tag: ""
   service:
     type: ClusterIP
     port: 3004

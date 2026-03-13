@@ -52,13 +52,13 @@ spec:
               key: CLIENT_URLS
         livenessProbe:
           httpGet:
-            path: /api/chat/health
+            path: /api/health
             port: http
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:
           httpGet:
-            path: /api/chat/health
+            path: /api/health
             port: http
           initialDelaySeconds: 10
           periodSeconds: 5

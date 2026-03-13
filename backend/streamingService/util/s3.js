@@ -22,7 +22,15 @@ const buildPublicUrl = (key) => {
   }
 
   if (/^https?:\/\//i.test(key)) {
-    return key;
+    // Already a full URL - strip to just the S3 key path and proxy through ELB
+    try {
+      const url = new URL(key);
+      const s3Key = url.pathname.replace(/^\//, '');
+      const base = process.env.STREAMING_PUBLIC_URL?.replace(/\/$/, '') || 'http://localhost:3002';
+      return `${base}/api/streaming/thumbnails/${encodeURI(s3Key)}`;
+    } catch {
+      return key;
+    }
   }
 
   const base = process.env.STREAMING_PUBLIC_URL?.replace(/\/$/, '') || 'http://localhost:3002';

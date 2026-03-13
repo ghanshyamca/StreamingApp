@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "streamingapp.labels" . | nindent 4 }}
 data:
-  MONGO_URI: "mongodb://{{ include "streamingapp.fullname" . }}-mongodb:27017/{{ .Values.mongodb.env.MONGO_DB | default "streamingapp" }}"
+  MONGO_URI: "mongodb://{{ include "streamingapp.fullname" . }}-mongodb:27017/{{ ((.Values.mongodb.env | default dict).MONGO_DB | default "streamingapp") }}"
   AWS_REGION: {{ .Values.global.awsRegion | quote }}
-  CLIENT_URLS: "http://{{ include "streamingapp.fullname" . }}-frontend"
-  STREAMING_PUBLIC_URL: "http://{{ include "streamingapp.fullname" . }}-streaming:3002"
+  CLIENT_URLS: {{ .Values.global.clientUrls | quote }}
+  STREAMING_PUBLIC_URL: {{ .Values.global.streamingPublicUrl | quote }}

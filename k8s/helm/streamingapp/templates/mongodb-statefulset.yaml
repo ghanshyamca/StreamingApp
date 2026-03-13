@@ -35,7 +35,9 @@ spec:
       name: data
     spec:
       accessModes: [ "ReadWriteOnce" ]
+      {{- if .Values.mongodb.persistence.storageClass }}
       storageClassName: {{ .Values.mongodb.persistence.storageClass }}
+      {{- end }}
       resources:
         requests:
           storage: {{ .Values.mongodb.persistence.size }}

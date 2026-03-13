@@ -11,6 +11,7 @@ IMAGE_TAG="${2:-latest}"
 CLUSTER_NAME="${CLUSTER_NAME:-streamingapp-cluster}"
 AWS_REGION="${AWS_REGION:-ap-south-1}"
 ECR_REPO_PREFIX="${ECR_REPO_PREFIX:-gs-}"
+MONGODB_STORAGE_CLASS="${MONGODB_STORAGE_CLASS:-}"
 AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
 ECR_REGISTRY="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com"
 
@@ -32,6 +33,24 @@ echo ""
 # Verify cluster connectivity
 echo "Verifying cluster connectivity..."
 kubectl cluster-info
+echo ""
+
+# Determine storage class for MongoDB PVC
+if [ -z "$MONGODB_STORAGE_CLASS" ]; then
+  MONGODB_STORAGE_CLASS=$(kubectl get storageclass -o jsonpath='{range .items[?(@.metadata.annotations.storageclass\.kubernetes\.io/is-default-class=="true")]}{.metadata.name}{"\n"}{end}' | head -n 1)
+
+  if [ -z "$MONGODB_STORAGE_CLASS" ]; then
+    MONGODB_STORAGE_CLASS=$(kubectl get storageclass -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)
+  fi
+fi
+
+HELM_STORAGE_CLASS_ARG=()
+if [ -n "$MONGODB_STORAGE_CLASS" ]; then
+  echo "Using MongoDB StorageClass: $MONGODB_STORAGE_CLASS"
+  HELM_STORAGE_CLASS_ARG=(--set mongodb.persistence.storageClass="$MONGODB_STORAGE_CLASS")
+else
+  echo "Warning: No StorageClass detected. MongoDB PVC may remain Pending."
+fi
 echo ""
 
 # Create namespace if it doesn't exist
@@ -64,6 +83,7 @@ helm upgrade --install streamingapp ./k8s/helm/streamingapp \
   --set admin.image.repository="${ECR_REPO_PREFIX}streamingapp-admin" \
   --set chat.image.repository="${ECR_REPO_PREFIX}streamingapp-chat" \
   --set global.environment="$ENVIRONMENT" \
+  "${HELM_STORAGE_CLASS_ARG[@]}" \
   --set secrets.jwtSecret="$JWT_SECRET" \
   --set secrets.awsAccessKeyId="$AWS_ACCESS_KEY_ID" \
   --set secrets.awsSecretAccessKey="$AWS_SECRET_ACCESS_KEY" \

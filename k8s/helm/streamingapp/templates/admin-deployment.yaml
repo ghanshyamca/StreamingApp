@@ -30,6 +30,9 @@ spec:
         - name: http
           containerPort: {{ .Values.admin.service.targetPort }}
           protocol: TCP
+        volumeMounts:
+        - name: admin-tmp-uploads
+          mountPath: /app/adminService/tmp-uploads
         env:
         - name: PORT
           value: {{ .Values.admin.env.PORT | quote }}
@@ -85,18 +88,21 @@ spec:
         {{- end }}
         livenessProbe:
           httpGet:
-            path: /api/admin/health
+            path: /api/health
             port: http
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:
           httpGet:
-            path: /api/admin/health
+            path: /api/health
             port: http
           initialDelaySeconds: 10
           periodSeconds: 5
         resources:
           {{- toYaml .Values.admin.resources | nindent 12 }}
+      volumes:
+      - name: admin-tmp-uploads
+        emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
