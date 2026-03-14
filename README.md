@@ -243,6 +243,15 @@ What this script does internally:
 4. Tags each as `v1.0.0`, `<git-commit-hash>`, and `latest`
 5. Pushes all tags to ECR
 
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/2.5%20Build%20and%20Push%20Docker%20Images%20to%20ECR%201.0.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/2.5%20Build%20and%20Push%20Docker%20Images%20to%20ECR%201.1.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/2.5%20Build%20and%20Push%20Docker%20Images%20to%20ECR%201.2.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/2.5%20Build%20and%20Push%20Docker%20Images%20to%20ECR%201.3.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/2.5%20Build%20and%20Push%20Docker%20Images%20to%20ECR%201.4.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/2.5%20Build%20and%20Push%20Docker%20Images%20to%20ECR%201.5.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/2.5%20Build%20and%20Push%20Docker%20Images%20to%20ECR%201.6.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/2.5%20Build%20and%20Push%20Docker%20Images%20to%20ECR%201.7.png"/>
+
 **Verify images were pushed:**
 ```bash
 aws ecr list-images --repository-name gs-streamingapp-frontend --region ap-south-1
@@ -251,6 +260,9 @@ aws ecr list-images --repository-name gs-streamingapp-streaming --region ap-sout
 aws ecr list-images --repository-name gs-streamingapp-admin --region ap-south-1
 aws ecr list-images --repository-name gs-streamingapp-chat --region ap-south-1
 ```
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/2.5%20Build%20and%20Push%20Docker%20Images%20to%20ECR%201.8%20Verify%20images%20were%20pushed%201.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/2.5%20Build%20and%20Push%20Docker%20Images%20to%20ECR%201.9%20Verify%20images%20were%20pushed%202.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/2.5%20Build%20and%20Push%20Docker%20Images%20to%20ECR%201.10%20Verify%20images%20were%20pushed%203.png"/>
 
 ---
 
@@ -310,6 +322,8 @@ aws s3api put-bucket-cors \
     }]
   }'
 ```
+
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/3.4%20Create%20S3%20Bucket%20for%20Video%20Storage.png"/>
 
 Update your `.env` with the bucket name:
 ```ini
@@ -413,6 +427,8 @@ Add these 3 credentials:
 - Secret: `arn:aws:sns:ap-south-1:123456789012:streamingapp-deployments`
   *(create SNS topic in Step 9 first, then come back and update this)*
 
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/4.5%20Add%20Jenkins%20Credentials.png"/>
+
 ### 4.6 Create the Jenkins Pipeline Job
 
 1. Click **New Item**
@@ -435,6 +451,8 @@ Add these 3 credentials:
 - Script Path: `Jenkinsfile`
 
 5. Click **Save**
+
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/4.6%20Create%20the%20Jenkins%20Pipeline%20Job.png"/>
 
 ### 4.7 Understand the Jenkinsfile Pipeline Stages
 
@@ -470,6 +488,8 @@ In your GitHub fork repository:
 3. Click **Add webhook**
 4. GitHub will send a test ping → verify a green ✓ appears
 
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/4.8%20Configure%20GitHub%20Webhook.png"/>
+
 ### 4.9 Trigger First Build
 
 1. In Jenkins, go to `StreamingApp-CI-CD`
@@ -479,6 +499,8 @@ In your GitHub fork repository:
 5. Click the build number → **Console Output** to watch logs
 
 **Verify each stage passes.** Fix any errors (usually credential issues) before proceeding.
+
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/4.9%20Trigger%20First%20Build.png"/>
 
 ---
 
@@ -491,6 +513,13 @@ In your GitHub fork repository:
 chmod +x scripts/create-eks-cluster.sh
 ./scripts/create-eks-cluster.sh
 ```
+
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.1%20Create%20EKS%20Cluster%201.0.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.1%20Create%20EKS%20Cluster%201.1.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.1%20Create%20EKS%20Cluster%201.2.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.1%20Create%20EKS%20Cluster%201.3.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.1%20Create%20EKS%20Cluster%201.4.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.1%20Create%20EKS%20Cluster%201.5.png"/>
 
 **Windows PowerShell:**
 ```powershell
@@ -561,6 +590,8 @@ The script will interactively prompt for:
 - `AWS_S3_BUCKET` — your S3 bucket name
 - `AWS_CDN_URL` — optional CloudFront URL
 
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.4%20Deploy%20Application%20to%20EKS.png"/>
+
 **Or deploy manually with full Helm command:**
 ```bash
 helm upgrade --install streamingapp ./k8s/helm/streamingapp \
@@ -601,6 +632,9 @@ kubectl get ingress -n dev
 # Check rollout status
 kubectl rollout status deployment -n dev
 ```
+
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.5%20Verify%20Deployment.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.5%20Verify%20Deployment%201.png"/>
 
 ### 5.6 Get the Application URL
 
@@ -648,238 +682,22 @@ export REACT_APP_CHAT_SOCKET_URL="http://abc123.ap-south-1.elb.amazonaws.com"
 # Re-deploy
 ./scripts/deploy-to-eks.sh dev v1.0.1
 ```
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.8%20Re-build%20Frontend%20with%20Production%20URLs.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.8%20Re-build%20Frontend%20with%20Production%20URLs%201.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.8%20Re-build%20Frontend%20with%20Production%20URLs%202.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.8%20Re-build%20Frontend%20with%20Production%20URLs%203.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.8%20Re-build%20Frontend%20with%20Production%20URLs%204.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.8%20Re-build%20Frontend%20with%20Production%20URLs%205.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.8%20Re-build%20Frontend%20with%20Production%20URLs%206.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.8%20Re-build%20Frontend%20with%20Production%20URLs%207.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.8%20Re-build%20Frontend%20with%20Production%20URLs%208.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.8%20Re-build%20Frontend%20with%20Production%20URLs%209.png"/>
 
 ---
 
-## STEP 6 — Monitoring and Logging
+## STEP 6 — ChatOps Integration
 
-### 6.1 Set Up CloudWatch Container Insights
-
-```bash
-chmod +x scripts/setup-monitoring.sh
-./scripts/setup-monitoring.sh
-```
-
-This script:
-1. Creates `amazon-cloudwatch` namespace in Kubernetes
-2. Creates a service account with `CloudWatchAgentServerPolicy`
-3. Deploys **CloudWatch Agent** as a DaemonSet (metrics)
-4. Deploys **Fluent Bit** as a DaemonSet (log forwarding)
-5. Creates CloudWatch Log Group: `/aws/eks/streamingapp-cluster/streamingapp`
-6. Creates CloudWatch Alarms (CPU > 80%, Memory > 80%, error rate, pod restarts)
-
-**Verify agents are running:**
-```bash
-kubectl get pods -n amazon-cloudwatch
-# Expected: cloudwatch-agent and fluent-bit pods Running on each node
-```
-
-### 6.2 CloudWatch Log Groups Created
-
-| Log Group | Contents |
-|---|---|
-| `/aws/eks/streamingapp-cluster/application` | Application logs |
-| `/aws/eks/streamingapp-cluster/cluster` | EKS cluster logs |
-| `/aws/containerinsights/streamingapp-cluster/performance` | CPU, memory, network metrics |
-
-### 6.3 View Logs via AWS CLI
-
-```bash
-# Tail live logs
-aws logs tail /aws/eks/streamingapp-cluster/streamingapp --follow --region ap-south-1
-
-# Filter for errors in the last hour
-aws logs filter-log-events \
-  --log-group-name /aws/eks/streamingapp-cluster/streamingapp \
-  --filter-pattern "ERROR" \
-  --start-time $(date -u -d '1 hour ago' +%s000) \
-  --region ap-south-1
-```
-
-**Windows PowerShell:**
-```powershell
-$startTime = [DateTimeOffset]::UtcNow.AddHours(-1).ToUnixTimeMilliseconds()
-aws logs filter-log-events `
-  --log-group-name /aws/eks/streamingapp-cluster/streamingapp `
-  --filter-pattern "ERROR" `
-  --start-time $startTime `
-  --region ap-south-1
-```
-
-### 6.4 View Logs via kubectl
-
-```bash
-# Follow logs per deployment
-kubectl logs -f deployment/streamingapp-frontend -n dev
-kubectl logs -f deployment/streamingapp-auth -n dev
-kubectl logs -f deployment/streamingapp-streaming -n dev
-kubectl logs -f deployment/streamingapp-admin -n dev
-kubectl logs -f deployment/streamingapp-chat -n dev
-
-# View all pods of a service at once
-kubectl logs -f -l app.kubernetes.io/component=streaming -n dev
-
-# Previous crashed container logs
-kubectl logs --previous <pod-name> -n dev
-```
-
-### 6.5 View in AWS Console
-
-1. Open **AWS Console → CloudWatch → Container Insights**
-2. Select: **EKS Clusters** → `streamingapp-cluster`
-3. View pre-built dashboards for: CPU, Memory, Network, Pod count
-
-### 6.6 View / Edit CloudWatch Alarms
-
-```bash
-# List all alarms
-aws cloudwatch describe-alarms --region ap-south-1
-
-# Check alarm states
-aws cloudwatch describe-alarms \
-  --alarm-names "streamingapp-cluster-high-cpu" \
-  --query 'MetricAlarms[0].StateValue' \
-  --output text
-```
-
-| Alarm | Metric | Threshold |
-|---|---|---|
-| CPU Utilization | `CPUUtilization` | > 80% for 10 min |
-| Memory Utilization | `MemoryUtilization` | > 80% for 10 min |
-| High Error Rate | `5XXError` | > 10 in 5 min |
-| Pod Restarts | `PodRestartCount` | > 3 in 15 min |
-
----
-
-## STEP 7 — Documentation
-
-### 7.1 Existing Documentation in Repo
-
-All documentation is already in the `docs/` directory:
-
-| File | Contents |
-|---|---|
-| `docs/DEPLOYMENT_GUIDE.md` | Full deployment reference |
-| `docs/MONITORING.md` | CloudWatch + Fluentd config details |
-| `docs/CHATOPS.md` | SNS + Lambda + Slack/Teams/Telegram setup |
-| `docs/QUICK_REFERENCE.md` | Common command cheat sheet |
-| `docs/SUBMISSION_GUIDE.md` | Submission checklist |
-
-### 7.2 Add Screenshots and Diagrams
-
-Document the following for your submission:
-
-- Screenshot of ECR repositories with pushed images
-- Screenshot of EKS cluster nodes (`kubectl get nodes`)
-- Screenshot of all pods running (`kubectl get pods -n dev`)
-- Screenshot of frontend UI loading in browser
-- Screenshot of Jenkins pipeline with green stages
-- Screenshot of CloudWatch Container Insights dashboard
-- Screenshot of CloudWatch Alarms
-- Screenshot of Slack/Teams/Telegram receiving SNS notification (bonus)
-
-### 7.3 Commit and Push Documentation
-
-```bash
-git add docs/ PROJECT_STEPS.md PROJECT_SUBMISSION_README.md
-git commit -m "docs: add complete deployment documentation and screenshots"
-git push origin main
-```
-
----
-
-## STEP 8 — Final Validation
-
-### 8.1 Check All Pods Are Running
-
-```bash
-kubectl get pods -n dev
-# Every pod should show: STATUS=Running, RESTARTS=0 (or very low)
-```
-
-### 8.2 Health Check All Services
-
-```bash
-# Get ALB URL
-ALB=$(kubectl get svc streamingapp-frontend -n dev \
-  -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
-
-echo "Frontend: http://$ALB"
-
-# Health endpoints
-curl http://$ALB/api/health                    # admin
-curl http://$(kubectl get svc streamingapp-auth -n dev -o jsonpath='{.status.loadBalancer.ingress[0].hostname}' 2>/dev/null || echo $ALB)/api/health
-
-# Or port-forward to test directly
-kubectl port-forward svc/streamingapp-auth 3001:3001 -n dev &
-curl http://localhost:3001/api/health
-# Expected: {"success":true,"service":"auth","status":"ok"}  (for auth)
-
-kubectl port-forward svc/streamingapp-admin 3003:3003 -n dev &
-curl http://localhost:3003/api/health
-# Expected: {"success":true,"service":"admin","status":"ok"}
-```
-
-### 8.3 Application Smoke Tests (Browser)
-
-1. **Open** `http://<ALB-DNS>` in browser
-2. **Register** a new user account
-3. **Login** with the account
-4. **Admin Dashboard** (requires admin role):
-   - Create an admin user in MongoDB OR update a user's `role` field to `"admin"`
-   - Upload a video + thumbnail (requires S3 credentials to be correct)
-5. **Browse page** — verify uploaded video appears
-6. **Video Player** — click play and verify streaming works
-7. **Chat** — open same video in two browser tabs, send messages, verify they appear in both tabs
-8. **Admin route protection** — try accessing `/admin` as a regular user → should redirect to `/browse`
-
-**Fix admin role (if needed):**
-```bash
-# Port-forward MongoDB
-kubectl port-forward svc/streamingapp-mongodb 27017:27017 -n dev
-
-# Connect with mongosh (in a new terminal)
-mongosh mongodb://localhost:27017/streamingapp
-
-# Update user to admin
-db.users.updateOne(
-  { email: "your@email.com" },
-  { $set: { role: "admin" } }
-)
-db.users.findOne({ email: "your@email.com" }, { role: 1, email: 1 })
-exit
-```
-
-### 8.4 Verify CI/CD Pipeline (Auto-trigger)
-
-```bash
-# Make a small change to trigger a build
-echo "# Validated $(date)" >> README.md
-git add README.md
-git commit -m "ci: trigger validation build"
-git push origin main
-```
-
-- Open Jenkins → confirm a new build triggers automatically via webhook
-- Verify all pipeline stages pass (green)
-- Confirm new image appears in ECR with new build number tag
-
-### 8.5 Verify Auto-scaling
-
-```bash
-# Generate load to trigger HPA (optional smoke test)
-kubectl run -i --tty load-test --rm --image=busybox --restart=Never -- \
-  /bin/sh -c "while true; do wget -q -O- http://streamingapp-streaming:3002/api/health; done"
-
-# In another terminal, watch HPA respond
-kubectl get hpa -n dev -w
-```
-
----
-
-## STEP 9 (Bonus) — ChatOps Integration
-
-### 9.1 Run the ChatOps Setup Script
+### 6.1 Run the ChatOps Setup Script
 
 ```bash
 # For Slack
@@ -891,35 +709,11 @@ kubectl get hpa -n dev -w
 # For Telegram
 ./scripts/setup-chatops.sh telegram
 ```
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/STEP%209%20(Bonus)%20%E2%80%94%20ChatOps%20Integration.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/STEP%209%20(Bonus)%20%E2%80%94%20ChatOps%20Integration%201.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/STEP%209%20(Bonus)%20%E2%80%94%20ChatOps%20Integration%202.png"/>
 
-### 9.2 Manual Setup (if not using script)
-
-**Create SNS Topics:**
-```bash
-# Deployment notifications
-DEPLOY_ARN=$(aws sns create-topic \
-  --name streamingapp-deployments \
-  --region ap-south-1 \
-  --query 'TopicArn' --output text)
-
-# Error alerts
-ALERT_ARN=$(aws sns create-topic \
-  --name streamingapp-alerts \
-  --region ap-south-1 \
-  --query 'TopicArn' --output text)
-
-# Monitoring alerts
-MONITOR_ARN=$(aws sns create-topic \
-  --name streamingapp-monitoring \
-  --region ap-south-1 \
-  --query 'TopicArn' --output text)
-
-echo "Deployment ARN: $DEPLOY_ARN"
-echo "Alert ARN:      $ALERT_ARN"
-echo "Monitor ARN:    $MONITOR_ARN"
-```
-
-### 9.3 Slack Integration
+### 6.2 Slack Integration
 
 **Create Slack Webhook:**
 1. Go to https://api.slack.com/apps → **Create New App → From scratch**
@@ -928,168 +722,10 @@ echo "Monitor ARN:    $MONITOR_ARN"
 4. **Add New Webhook to Workspace** → choose channel `#deployments` → **Allow**
 5. Copy the webhook URL: `https://hooks.slack.com/services/T.../B.../...`
 
-**Create Lambda execution IAM role:**
-```bash
-aws iam create-role \
-  --role-name StreamingAppLambdaSNSRole \
-  --assume-role-policy-document '{
-    "Version": "2012-10-17",
-    "Statement": [{
-      "Effect": "Allow",
-      "Principal": {"Service": "lambda.amazonaws.com"},
-      "Action": "sts:AssumeRole"
-    }]
-  }'
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/9.3%20Slack%20Integration.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/9.3%20Slack%20Integration%201.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/9.3%20Slack%20Integration%202.png"/>
 
-aws iam attach-role-policy \
-  --role-name StreamingAppLambdaSNSRole \
-  --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
 
-# Get the role ARN
-ROLE_ARN=$(aws iam get-role \
-  --role-name StreamingAppLambdaSNSRole \
-  --query 'Role.Arn' --output text)
-```
 
-**Deploy the Lambda function** (code is at `lambda/sns-to-slack.py`):
-```bash
-cd lambda
-zip sns-to-slack.zip sns-to-slack.py
 
-LAMBDA_ARN=$(aws lambda create-function \
-  --function-name sns-to-slack \
-  --runtime python3.9 \
-  --handler sns-to-slack.lambda_handler \
-  --zip-file fileb://sns-to-slack.zip \
-  --role $ROLE_ARN \
-  --environment "Variables={SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/WEBHOOK/URL}" \
-  --region ap-south-1 \
-  --query 'FunctionArn' --output text)
-
-echo "Lambda ARN: $LAMBDA_ARN"
-cd ..
-```
-
-**Subscribe Lambda to SNS:**
-```bash
-# Allow SNS to invoke Lambda
-aws lambda add-permission \
-  --function-name sns-to-slack \
-  --statement-id sns-invoke \
-  --action lambda:InvokeFunction \
-  --principal sns.amazonaws.com \
-  --source-arn $DEPLOY_ARN \
-  --region ap-south-1
-
-# Subscribe
-aws sns subscribe \
-  --topic-arn $DEPLOY_ARN \
-  --protocol lambda \
-  --notification-endpoint $LAMBDA_ARN \
-  --region ap-south-1
-```
-
-### 9.4 Teams Integration
-
-Lambda function is at `lambda/sns-to-teams.py`. Use the same steps as Slack but:
-- Get Teams webhook URL: **Teams channel → ... → Connectors → Incoming Webhook → Add → Copy URL**
-- Deploy `sns-to-teams.zip` with env var `TEAMS_WEBHOOK_URL` instead of `SLACK_WEBHOOK_URL`
-
-### 9.5 Telegram Integration
-
-Lambda function is at `lambda/sns-to-telegram.py`. Env vars needed:
-- `TELEGRAM_BOT_TOKEN` — get from @BotFather on Telegram (`/newbot`)
-- `TELEGRAM_CHAT_ID` — get from @userinfobot
-
-### 9.6 Update Jenkins Credential with SNS ARN
-
-Go to **Jenkins → Manage Jenkins → Credentials** → find `sns-topic-arn` → update value with `$DEPLOY_ARN`.
-
-### 9.7 Test the Notification
-
-```bash
-aws sns publish \
-  --topic-arn $DEPLOY_ARN \
-  --subject "✅ StreamingApp ChatOps Test" \
-  --message "ChatOps is working! Deployment notifications are active." \
-  --region ap-south-1
-```
-
-Verify the message appears in your Slack/Teams/Telegram channel.
-
----
-
-## Submission Checklist
-
-Before submitting, verify all items:
-
-```
-[ ] Fork created at https://github.com/YOUR_USERNAME/StreamingApp
-[ ] All .env files created from .env.example templates
-[ ] docker-compose up --build works locally
-[ ] 5 ECR repositories created with images pushed
-[ ] EKS cluster running with 3 nodes
-[ ] All 6 pods Running in dev namespace
-[ ] Frontend accessible via ALB URL in browser
-[ ] User registration and login working
-[ ] Video upload via admin dashboard working (requires S3)
-[ ] Video playback working
-[ ] Chat working between browser tabs
-[ ] Jenkins pipeline with all green stages
-[ ] GitHub webhook auto-triggers Jenkins on git push
-[ ] CloudWatch Container Insights showing metrics
-[ ] CloudWatch Log Groups receiving logs
-[ ] CloudWatch Alarms configured
-[ ] All documentation pushed to GitHub
-[ ] SNS + Lambda ChatOps notifications working (bonus)
-```
-
-### Final Push
-```bash
-git add .
-git commit -m "feat: complete graded project - all steps implemented"
-git push origin main
-```
-
-### Submission File
-Create a file named `submission.txt`:
-```
-GitHub Repository: https://github.com/YOUR_USERNAME/StreamingApp
-Application URL:   http://YOUR_ALB_DNS_HERE
-Jenkins URL:       https://jenkinsacademics.herovired.com/
-EKS Cluster:       streamingapp-cluster (ap-south-1)
-ECR Registry:      123456789012.dkr.ecr.ap-south-1.amazonaws.com
-```
-
-Upload `submission.txt` to **Vlearn**.
-
----
-
-## Quick Reference — Most Used Commands
-
-```bash
-# Check pod status
-kubectl get pods -n dev
-
-# View logs
-kubectl logs -f deployment/streamingapp-auth -n dev
-
-# Restart a deployment
-kubectl rollout restart deployment/streamingapp-auth -n dev
-
-# Scale up
-kubectl scale deployment streamingapp-streaming --replicas=5 -n dev
-
-# Get frontend URL
-kubectl get svc streamingapp-frontend -n dev
-
-# Run a new deploy after code change
-./scripts/build-and-push.sh v1.0.2
-./scripts/deploy-to-eks.sh dev v1.0.2
-
-# Delete all dev resources (cleanup)
-helm uninstall streamingapp -n dev
-
-# Delete EKS cluster (ONLY when done — this is irreversible)
-eksctl delete cluster --name streamingapp-cluster --region ap-south-1
-```
