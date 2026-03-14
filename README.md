@@ -1,59 +1,40 @@
-# Graded Project: Orchestration and Scaling — Complete Step-by-Step Guide
+# StreamingApp — Graded Project: Orchestration and Scaling
 
 ---
 
-## Prerequisites — Install Tools First
+## 1. Architecture
 
-### On Windows (PowerShell as Administrator)
-```powershell
-# 1. AWS CLI
-msiexec.exe /i https://awscli.amazonaws.com/AWSCLIV2.msi
-# Restart terminal after install
+### Microservices Architecture
 
-# 2. Docker Desktop
-# Download from: https://www.docker.com/products/docker-desktop/
-
-# 3. kubectl
-curl.exe -LO "https://dl.k8s.io/release/v1.28.0/bin/windows/amd64/kubectl.exe"
-# Move kubectl.exe to C:\Windows\System32\ or add its folder to PATH
-
-# 4. eksctl and Helm (Chocolatey required)
-Set-ExecutionPolicy Bypass -Scope Process -Force
-[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-choco install eksctl -y
-choco install kubernetes-helm -y
-
-# 5. Git
-choco install git -y
 ```
-
-### On Linux/macOS (Terminal)
-```bash
-# AWS CLI
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip && sudo ./aws/install
-
-# kubectl
-curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-
-# eksctl
-curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
-sudo mv /tmp/eksctl /usr/local/bin
-
-# Helm
-curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-```
-
-### Verify all tools
-```bash
-aws --version
-docker --version
-kubectl version --client
-eksctl version
-helm version
-git --version
+┌─────────────┐
+│   Users     │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────────────────────────────┐
+│   AWS Application Load Balancer     │
+└──────────────┬──────────────────────┘
+               │
+               ▼
+      ┌────────────────┐
+      │   Frontend     │
+      │   (React)      │
+      └────────┬───────┘
+               │
+    ┌──────────┴──────────────┬───────────────┬──────────────┐
+    ▼                         ▼               ▼              ▼
+┌─────────┐             ┌──────────┐    ┌─────────┐   ┌─────────┐
+│  Auth   │             │Streaming │    │  Admin  │   │  Chat   │
+│ Service │             │ Service  │    │ Service │   │ Service │
+│ :3001   │             │  :3002   │    │  :3003  │   │ :3004   │
+└────┬────┘             └────┬─────┘    └────┬────┘   └────┬────┘
+     │                       │               │             │
+     └───────────────┬───────┴───────┬───────┴─────────────┘
+                     ▼               ▼
+                ┌─────────┐     ┌─────────┐
+                │ MongoDB │     │  AWS S3 │
+                └─────────┘     └─────────┘
 ```
 
 ---
@@ -337,8 +318,8 @@ AWS_S3_BUCKET=streamingapp-videos-YOUR_ACCOUNT_ID
 ### 4.1 Access Jenkins
 Use the provided Jenkins URL:
 - **URL:** https://jenkinsacademics.herovired.com/
-- **Username:** `herovired`
-- **Password:** `herovired`
+- **Username:** `username`
+- **Password:** `password`
 
 *(Skip 4.2 and 4.3 if using the provided Jenkins URL)*
 
@@ -725,6 +706,34 @@ export REACT_APP_CHAT_SOCKET_URL="http://abc123.ap-south-1.elb.amazonaws.com"
 <img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/9.3%20Slack%20Integration.png"/>
 <img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/9.3%20Slack%20Integration%201.png"/>
 <img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/9.3%20Slack%20Integration%202.png"/>
+
+---
+## STEP 7 — Access website using elb url and perform action
+
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.9%20%201.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.9%202.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.9%203.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.9%204.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.9%205.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.9%206.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.9%207.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.9%208.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.9%209.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.9%2010.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/5.9%2011.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/6.6%20s3%20bucket.png"/>
+
+
+---
+## STEP 7 — Github webhook trigger and Jenkins pipeline
+
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/6.5.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/6.3.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/6.0.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/6.2.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/6.1.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/6.7.png"/>
+
 
 
 
