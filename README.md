@@ -1,5 +1,3 @@
-# Graded Project: Orchestration and Scaling — Complete Step-by-Step Guide
-
 ## 1. Architecture
 
 ### Microservices Architecture
