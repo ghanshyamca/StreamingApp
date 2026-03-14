@@ -1,5 +1,39 @@
 # Graded Project: Orchestration and Scaling — Complete Step-by-Step Guide
 
+## 1. Architecture
+
+### Microservices Architecture
+
+```
+┌─────────────┐
+│   Users     │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────────────────────────────┐
+│   AWS Application Load Balancer     │
+└──────────────┬──────────────────────┘
+               │
+               ▼
+      ┌────────────────┐
+      │   Frontend     │
+      │   (React)      │
+      └────────┬───────┘
+               │
+    ┌──────────┴──────────────┬───────────────┬──────────────┐
+    ▼                         ▼               ▼              ▼
+┌─────────┐             ┌──────────┐    ┌─────────┐   ┌─────────┐
+│  Auth   │             │Streaming │    │  Admin  │   │  Chat   │
+│ Service │             │ Service  │    │ Service │   │ Service │
+│ :3001   │             │  :3002   │    │  :3003  │   │ :3004   │
+└────┬────┘             └────┬─────┘    └────┬────┘   └────┬────┘
+     │                       │               │             │
+     └───────────────┬───────┴───────┬───────┴─────────────┘
+                     ▼               ▼
+                ┌─────────┐     ┌─────────┐
+                │ MongoDB │     │  AWS S3 │
+                └─────────┘     └─────────┘
+```
 ---
 
 ## Prerequisites — Install Tools First
