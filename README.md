@@ -693,6 +693,7 @@ export REACT_APP_CHAT_SOCKET_URL="http://abc123.ap-south-1.elb.amazonaws.com"
 <img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/STEP%209%20(Bonus)%20%E2%80%94%20ChatOps%20Integration.png"/>
 <img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/STEP%209%20(Bonus)%20%E2%80%94%20ChatOps%20Integration%201.png"/>
 <img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/STEP%209%20(Bonus)%20%E2%80%94%20ChatOps%20Integration%202.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/streamingapp-sns-to-slack-Functions-Lambda.png"/>
 
 ### 6.2 Slack Integration
 
