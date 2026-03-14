@@ -197,6 +197,12 @@ This creates 5 ECR repos with image scanning enabled:
 - `gs-streamingapp-admin`
 - `gs-streamingapp-chat`
 
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/2.4%20Create%20ECR%20Repositories%201.0.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/2.4%20Create%20ECR%20Repositories%201.1.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/2.4%20Create%20ECR%20Repositories%201.2.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/2.4%20Create%20ECR%20Repositories%201.3.png"/>
+<img src="https://github.com/ghanshyamca/StreamingApp/blob/main/Image/2.4%20Create%20ECR%20Repositories%201.4.png"/>
+
 **Windows PowerShell alternative:**
 ```powershell
 $AWS_REGION = "ap-south-1"
